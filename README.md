@@ -4,7 +4,7 @@
 
 # Spectrum Analyzer Using the PIC16F13145 Microcontroller With MCC Melody
 
-This repository contains an MPLAB® X project that implements a FFT Spectrum Analyzer using PIC16F13145 microcontroller. The audio input is provided from a cable jack and the frequency spectrum result is displayed on a 16x16 WS2812 LED matrix. The application translates the messages sent by Serial Peripheral Interface (SPI) into messages intelligible by WS2812 using Configurable Logic Block (CLB) peripheral.
+This repository contains an MPLAB® X project that implements a Fast Fourier Transform (FFT) Spectrum Analyzer using the PIC16F13145 microcontroller. The audio input is provided from a cable jack and the frequency spectrum result is displayed on a 16x16 WS2812 LED matrix. The application translates the messages sent by the Serial Peripheral Interface (SPI) into messages intelligible by WS2812 using a Configurable Logic Block (CLB) peripheral.
 
 
 
@@ -52,18 +52,18 @@ To program the Curiosity Nano board with this MPLAB X project, follow the steps 
 
 ## Concept
 
-The Fast Fourier Transform (FFT) is a method to decompose a signal into its frequency components. The spectrum frequency is computed using a 16-bit FFT implementation. FFT computes the frequency spectrum using 64 samples from ADC as input and return 32 complex numbers as output. In order to be correctly display, it is necessary to calculate the absolute values of the complex numbers from their real and imaginary components. For FFT implementation it is used `fix_fft` library ported to PIC by Simon Inns. More details about `fix_fft` library are available in [Real-Time Audio Spectrum Analyser Project](https://www.waitingforfriday.com/?p=325).
+The FFT is a method to decompose a signal into its frequency components. The spectrum frequency is computed using a 16-bit FFT implementation. FFT computes the frequency spectrum using 64 samples from Analog-to-Digital Converter (ADC) as input and returns 32 complex numbers as output. In order to be correctly display, it is necessary to calculate the absolute values of the complex numbers from their real and imaginary components. For the FFT implementation, the `fix_fft` library, ported to PIC by Simon Inns, is used. More details about `fix_fft` library are available in [Real-Time Audio Spectrum Analyser Project](https://www.waitingforfriday.com/?p=325).
 
 
  The final 32 values are grouped into 16 intervals corresponding to the 16 bars graph on the matrix. Amplitude values are mapped between 0 and 160. The peak value of 160 was determined experimentally by configuring the Universal Asynchronous Receiver-Transmitter (UART) peripheral in order to see the values obtained from several tests.
 
-The audio signal from cable jack is provided through the Curiosity Nano Explorer microphone amplifier (`AMP_IN input`) configured for unity gain. The `J206` jumper from `MIC CIRCUIT` must be off when connecting the audio signal. 
+The audio signal from cable jack is provided through the Curiosity Nano Explorer microphone amplifier (`AMP_IN input`), configured for unity gain. The `J206` jumper from `MIC CIRCUIT` must be off when connecting the audio signal. 
 <br><img src="images/schematic_amp_in_input.png" width="400">
 
-The ADC convert audio signal into digital samples with a sample rate controlled by TMR1. In this code example, the TMR1 period is configured to 25 us (40 kHz), resulting a 20 kHz maximum frequency that can be analyzed using FFT algorithm.
+The ADC converts audio signal into digital samples with a sample rate controlled by TMR1. In this code example, the TMR1 period is configured to 25 us (40 kHz), resulting in a 20 kHz maximum frequency that can be analyzed using FFT algorithm.
 
 
-## Display matrix
+## Display Matrix
 
 The Frequeny Spectrum is displayed on a 16x16 WS2812 LED Matrix. The CLB can control and manipulate the transmitted data through the SPI and transform it into the equivalent WS2812 data. The figure below shows the implemented solution.
 <br><img src="images/mcc_clb_circuit.png" width="800">
@@ -168,7 +168,7 @@ The figure below shows the schematic of the assembly.
 
 ## Summary
 
-This example demonstrates how to implement an FFT Spectum Analyser using PIC16F13145 microcontroller. The 16-band frequency spectrum is displayed on a WS2812 LED Matrix using CLB.
+This example demonstrates how to implement a FFT Spectum Analyser using the PIC16F13145 microcontroller. The 16-band frequency spectrum is displayed on a WS2812 LED Matrix using CLB.
 <br>
 
 ##  How to Program the Curiosity Nano Board
