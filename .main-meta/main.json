@@ -4,10 +4,10 @@
     "content": {
         "metaDataVersion": "1.3.0",
         "name": "com.microchip.mcu8.mplabx.project.pic16f13145-spectrum-analyzer-mplab-mcc",
-        "version": " ",
-        "displayName": "",
+        "version": "1.0.0",
+        "displayName": "Spectrum Analyzer Using the PIC16F13145 Microcontroller With MCC Melody",
         "projectName": "pic16f13145-spectrum-analyzer-mplab-mcc",
-        "shortDescription": "This repository provides an MPLAB X project for a FFT Spectrum Analyzer implementation using the PIC16F13145 microcontroller.",
+        "shortDescription": "This repository contains an MPLAB® X project that implements a FFT Spectrum Analyzer using PIC16F13145 microcontroller.",
         "ide": {
             "name": "MPLAB X",
             "semverRange": ">=6.20.0"
@@ -19,12 +19,12 @@
             }
         ],
         "dfp": {
-            "name": "",
-            "semverRange": ""
+            "name": "PIC16F1xxx_DFP",
+            "semverRange": "^1.25.389"
         },
         "configurator": {
-            "name": "",
-            "semverRange": ""
+            "name": "MCC",
+            "semverRange": ">=5.7.1"
         },
         "device": {
             "metaDataVersion": "1.0.0",
@@ -37,8 +37,8 @@
             }
         },
         "author": "Andreea Marica",
-        "peripherals": [],
-        "keywords": [],
+        "peripherals": ["CLB", "SPI", "ADC", "TMR1"],
+        "keywords": ["Melody", "CLB", "WS2812/11", "FFT"],
         "additionalData": {
             "longDescription": {
                 "metaDataVersion": "1.0.0",
