@@ -155,7 +155,7 @@ The following table shows the setup connections:
 
 
 The figure below shows the schematic of the assembly.
-<br><img src="images/schematic.png" width="800"> 
+<br><img src="images/spectrum_analyzer_schematic.png" width="800"> 
 
 <b>Note:</b> The WS2812 matrix must be externally powered up due to higher power consumption.
 
