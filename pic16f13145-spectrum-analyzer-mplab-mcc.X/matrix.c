@@ -40,7 +40,7 @@
 
 static void Write_LED_Pixel(const color_t *frame) 
 {
-    SPI1_Open(Custom_SPI); 
+    SPI1_Open(MSSP1_DEFAULT); 
     SPI1_BufferWrite((uint8_t*)frame, 3);
     SPI1_Close(); 
 }

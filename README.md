@@ -1,6 +1,12 @@
 <!-- Please do not change this html logo with link -->
 
-<a href="https://www.microchip.com" rel="nofollow"><img src="images/microchip.png" alt="MCHP" width="300"/></a>
+<a target="_blank" href="https://www.microchip.com/" id="top-of-page">
+   <picture>
+      <source media="(prefers-color-scheme: light)" srcset="images/mchp_logo_light.png" width="350">
+      <source media="(prefers-color-scheme: dark)" srcset="images/mchp_logo_dark.png" width="350">
+      <img alt="Microchip Technologies Inc." src="https://www.microchip.com/content/experience-fragments/mchp/en_us/site/header/master/_jcr_content/root/responsivegrid/header/logo.coreimg.100.300.png/1605828081463/microchip.png">
+   </picture>
+</a>
 
 # Spectrum Analyzer Using the PIC16F13145 Microcontroller With MCC Melody
 
@@ -23,14 +29,16 @@ More details and code examples on the PIC16F13145 can be found at the following 
 
 ## Software Used
 
-- [MPLAB® X IDE v6.20 or newer](https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide?utm_source=GitHub&utm_medium=TextLink&utm_campaign=MCU8_PIC16F13145&utm_content=pic16f13145-spectrum-analyzer-mplab-mcc-github&utm_bu=MCU08)
-- [MPLAB XC8 v2.50 or newer](https://www.microchip.com/en-us/tools-resources/develop/mplab-xc-compilers?utm_source=GitHub&utm_medium=TextLink&utm_campaign=MCU8_PIC16F13145&utm_content=pic16f13145-spectrum-analyzer-mplab-mcc-github&utm_bu=MCU08)
-- [PIC16F1xxxx_DFP v1.25.389 or newer](https://packs.download.microchip.com/)
+- [MPLAB® X IDE v6.25 or newer](https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide?utm_source=GitHub&utm_medium=TextLink&utm_campaign=MCU8_PIC16F13145&utm_content=pic16f13145-spectrum-analyzer-mplab-mcc-github&utm_bu=MCU08) or [MPLAB® Tools for VS Code®](https://www.microchip.com/en-us/tools-resources/develop/mplab-tools-vs-code?utm_source=GitHub&utm_medium=TextLink&utm_campaign=MCU8_PIC16F13145&utm_content=pic16f13145-spectrum-analyzer-mplab-mcc-github&utm_bu=MCU08)
+- [MPLAB XC8 v3.10 or newer](https://www.microchip.com/en-us/tools-resources/develop/mplab-xc-compilers?utm_source=GitHub&utm_medium=TextLink&utm_campaign=MCU8_PIC16F13145&utm_content=pic16f13145-spectrum-analyzer-mplab-mcc-github&utm_bu=MCU08)
+- [PIC16F1xxxx_DFP v1.29.444 or newer](https://packs.download.microchip.com/)
+
+**Important:** The current version features an update to the CLB peripheral, which now includes the CLB Synthesizer Library. For migration details and required changes, refer to the [_Troubleshooting MCC Melody Configurable Logic Block (CLB) Projects Configured With CLB v1.x.x_](https://onlinedocs.microchip.com/oxy/GUID-9438FEC3-C80B-4328-8A8E-2531EDEE6155-en-US-1/index.html) migration guide documentation.
 
 ## Hardware Used
 
 - The [PIC16F13145 Curiosity Nano Development board](https://www.microchip.com/en-us/development-tool/EV06M52A?utm_source=GitHub&utm_medium=TextLink&utm_campaign=MCU8_PIC16F13145&utm_content=pic16f13145-spectrum-analyzer-mplab-mcc-github&utm_bu=MCU08) is used as a test platform:
-  <br><img src="images/pic16f13145-cnano.png" width="600">
+  <br><img src="images/pic16f13145-cnano.png" width="500">
 
 - [Curiosity Nano Explorer board:](https://www.microchip.com/en-us/development-tool/EV58G97A?utm_source=GitHub&utm_medium=TextLink&utm_campaign=MCU8_PIC16F13145&utm_content=pic16f13145-spectrum-analyzer-mplab-mcc-github&utm_bu=MCU08) 
   <br><img src="images/curiosity-nano-explorer.png" width="500">  
@@ -93,49 +101,54 @@ The following peripheral and clock configurations are set up using MPLAB® Code 
     - Clock Divider: 1
     <br><img src="images/mcc_clock_control.png" width="400">
 
-3. MSSP1 and SPI:
-
-   - Serial Protocol: SPI
+3. MSSP1 (SPI):
+     - Custom Name: SPI1_Host
      - Mode: Host
-     - SPI Mode: SPI Mode 1
-     - Config Name: Custom_SPI
-     - Requested Speed (kHz): 800
+     - SPI Mode: Mode 1
      - Clock Source Selection: FOSC/4_SSPxADD
-       <br><img src="images/mcc_spi_host.png" width="400"> 
-       <br><img src="images/mcc_mssp.png" width="400">   
-
-4. CLB1:
-    - Enable CLB: Enabled
-    - Clock Selection: HFINTOSC
+     - SPI Clock Frequency (Hz): 800000
+     - Interrupt Driven: Disabled
+       <br><img src="images/mssp_spi_config.png" width="400"> 
+  
+4. CLB Synthesizer Library:
     - Clock Divider: Divide clock source by 4
+    - Clock Selection: HFINTOSC
+    <br><img src="images/mcc_clb_library.png" width="400"> 
+
+5. CLB1:
+    - Enable CLB: Enabled
+    - Generate ISR: Disabled
     <br><img src="images/mcc_clb.png" width="400"> 
 
-5. TMR1:
-    - Enable Timer: Enabled
-    - Clock Selection: FOSC
+6. TMR1:
+    - Timer Enable: Enabled
+    - Clock Source: FOSC
     - Prescaler: 1:1
-    - Enable Period Count Editor: Disabled
-    - Period Count: 0.000025
-    - TMR Interrupt Enable: Enable
-    <br><img src="images/mcc_tmr1.png" width="400">  
+    - Timer Count Editor Enable: Disabled
+    - Requested Period: 25us
+    - TMR Interrupt Enable: Enabled 
+    <br><img src="images/mcc_tmr1_1.png" width="400"> 
+    <br><img src="images/mcc_tmr1_2.png" width="400"> 
 
-6. ADC:
+7. ADC:
+    - TMR Dependency Selector: Timer1
     - Enable ADC: Enabled
     - Result Alignment: right
     - Positive Input Channel: ANA1
-    - Auto-conversion trigger: TMR1
-    - Clock Selection: FOSC
+    - Auto-conversion Trigger Source: TMR1
+    - Clock Source: FOSC
     - Clock Divider: FOSC/32
-    - Conversion Done Interrupt Enable: Enable
-    <br><img src="images/mcc_adc.png" width="400">    
+    - Conversion Done Interrupt Enable: Enabled  
+    <br><img src="images/mcc_adc_1.png" width="400"> 
+    <br><img src="images/mcc_adc_2.png" width="400">  
 
-7. CRC:
-    - Auto-configured by CLB
+8. CRC:
+    - Auto-configured by the CLB
 
-8. NVM:
-    - Auto-configured by CLB
+9. NVM:
+    - Auto-configured by the CLB
 
-9. Pin Grid View:
+10. Pin Grid View:
    - CLBPPSOUT0: RB4 (CLBSWIN0)
    - CLBPPSOUT1: RB5 (SDO)
    - CLBPPSOUT2: RB6 (SCK)

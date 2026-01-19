@@ -7,11 +7,11 @@
  *
  * @brief This header file provides type definitions for the SPI module operation in Polling mode.
  *
- * @version SPI Driver Version v5.0.0
+ * @version SPI Driver Version v5.0.1
 */
 
 /*
-© [2024] Microchip Technology Inc. and its subsidiaries.
+© [2026] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 

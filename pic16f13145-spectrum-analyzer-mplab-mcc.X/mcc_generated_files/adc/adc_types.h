@@ -7,13 +7,13 @@
  *
  * @brief This file provides type definitions for the ADC module.
  *
- * @version ADC Driver Version 3.0.0
+ * @version ADC Driver Version 2.0.1
  * 
- * @version ADC Package Version 2.0.0
+ * @version ADC Package Version 2.0.2
 */
 
 /*
-© [2024] Microchip Technology Inc. and its subsidiaries.
+© [2026] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -156,33 +156,33 @@ typedef enum
  */
 typedef enum
 {
-    ADC_TRIGGER_SOURCE_DISABLED = 0x0, /**< Disabled*/  
-    ADC_TRIGGER_SOURCE_ADACTPPS = 0x1, /**< ADACTPPS*/  
-    ADC_TRIGGER_SOURCE_TMR0 = 0x2, /**< TMR0*/  
-    ADC_TRIGGER_SOURCE_TMR1 = 0x3, /**< TMR1*/  
-    ADC_TRIGGER_SOURCE_TMR2 = 0x4, /**< TMR2*/  
-    ADC_TRIGGER_SOURCE_CCP1 = 0x8, /**< CCP1*/  
-    ADC_TRIGGER_SOURCE_CCP2 = 0x9, /**< CCP2*/  
-    ADC_TRIGGER_SOURCE_C1OUT = 0x13, /**< C1OUT*/  
-    ADC_TRIGGER_SOURCE_C2OUT = 0x14, /**< C2OUT*/  
-    ADC_TRIGGER_SOURCE_IOC = 0x15, /**< IOC*/  
-    ADC_TRIGGER_SOURCE_CLC1 = 0x16, /**< CLC1*/  
-    ADC_TRIGGER_SOURCE_CLC2 = 0x17, /**< CLC2*/  
-    ADC_TRIGGER_SOURCE_CLC3 = 0x18, /**< CLC3*/  
-    ADC_TRIGGER_SOURCE_CLC4 = 0x19, /**< CLC4*/  
-    ADC_TRIGGER_SOURCE_ADERRH = 0x1d, /**< ADERRH*/  
-    ADC_TRIGGER_SOURCE_ADRESH = 0x1e, /**< ADRESH*/  
-    ADC_TRIGGER_SOURCE_ADPCH = 0x1f, /**< ADPCH*/  
-    ADC_TRIGGER_SOURCE_PWM1OUT = 0x20, /**< PWM1OUT*/  
-    ADC_TRIGGER_SOURCE_PWM2OUT = 0x21, /**< PWM2OUT*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT0 = 0x22, /**< CLB1OUT0*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT1 = 0x23, /**< CLB1OUT1*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT2 = 0x24, /**< CLB1OUT2*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT3 = 0x25, /**< CLB1OUT3*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT4 = 0x26, /**< CLB1OUT4*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT5 = 0x27, /**< CLB1OUT5*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT6 = 0x28, /**< CLB1OUT6*/  
-    ADC_TRIGGER_SOURCE_CLB1OUT7 = 0x29 /**< CLB1OUT7*/  
+    ADC_TRIGGER_SOURCE_DISABLED = 0x0, /**< Disabled*/
+    ADC_TRIGGER_SOURCE_ADACTPPS = 0x1, /**< ADACTPPS*/
+    ADC_TRIGGER_SOURCE_TMR0 = 0x2, /**< TMR0*/
+    ADC_TRIGGER_SOURCE_TMR1 = 0x3, /**< TMR1*/
+    ADC_TRIGGER_SOURCE_TMR2 = 0x4, /**< TMR2*/
+    ADC_TRIGGER_SOURCE_CCP1 = 0x8, /**< CCP1*/
+    ADC_TRIGGER_SOURCE_CCP2 = 0x9, /**< CCP2*/
+    ADC_TRIGGER_SOURCE_C1OUT = 0x13, /**< C1OUT*/
+    ADC_TRIGGER_SOURCE_C2OUT = 0x14, /**< C2OUT*/
+    ADC_TRIGGER_SOURCE_IOC = 0x15, /**< IOC*/
+    ADC_TRIGGER_SOURCE_CLC1 = 0x16, /**< CLC1*/
+    ADC_TRIGGER_SOURCE_CLC2 = 0x17, /**< CLC2*/
+    ADC_TRIGGER_SOURCE_CLC3 = 0x18, /**< CLC3*/
+    ADC_TRIGGER_SOURCE_CLC4 = 0x19, /**< CLC4*/
+    ADC_TRIGGER_SOURCE_ADERRH = 0x1d, /**< ADERRH*/
+    ADC_TRIGGER_SOURCE_ADRESH = 0x1e, /**< ADRESH*/
+    ADC_TRIGGER_SOURCE_ADPCH = 0x1f, /**< ADPCH*/
+    ADC_TRIGGER_SOURCE_PWM1OUT = 0x20, /**< PWM1OUT*/
+    ADC_TRIGGER_SOURCE_PWM2OUT = 0x21, /**< PWM2OUT*/
+    ADC_TRIGGER_SOURCE_CLB_BLE0 = 0x22, /**< CLB_BLE[0]*/
+    ADC_TRIGGER_SOURCE_CLB_BLE1 = 0x23, /**< CLB_BLE[1]*/
+    ADC_TRIGGER_SOURCE_CLB_BLE2 = 0x24, /**< CLB_BLE[2]*/
+    ADC_TRIGGER_SOURCE_CLB_BLE3 = 0x25, /**< CLB_BLE[3]*/
+    ADC_TRIGGER_SOURCE_CLB_BLE4 = 0x26, /**< CLB_BLE[4]*/
+    ADC_TRIGGER_SOURCE_CLB_BLE5 = 0x27, /**< CLB_BLE[5]*/
+    ADC_TRIGGER_SOURCE_CLB_BLE6 = 0x28, /**< CLB_BLE[6]*/
+    ADC_TRIGGER_SOURCE_CLB_BLE7 = 0x29 /**< CLB_BLE[7]*/
 } adc_trigger_source_t ;
 
 /**

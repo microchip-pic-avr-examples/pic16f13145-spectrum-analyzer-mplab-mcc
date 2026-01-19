@@ -7,11 +7,11 @@
  *
  * @brief This file contains the driver code for the SPI1 module.
  *
- * @version SPI1 Driver Version v5.0.0
+ * @version SPI1 Driver Version v5.0.1
  */
 
 /*
-© [2024] Microchip Technology Inc. and its subsidiaries.
+© [2026] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -53,42 +53,41 @@ const struct SPI_INTERFACE SPI1_Host = {
 };
 
 static const spi_configuration_t spi1_configuration[] = {
-    { 0x0, 0xa, 0x10, 0x9 },
-    { 0x64, 0x0, 0x10, 0x1 }
+    { 0x24, 0xA, 0x10, 0x9 }
 };
 
 void SPI1_Initialize(void)
 {
     // Return mssp1 registers to reset state
-    PIE5bits.SSP1IE  = 0;
-    PIR5bits.SSP1IF    = 0;
+    PIE5bits.SSP1IE  = 0U;
+    PIR5bits.SSP1IF    = 0U;
 
-    SSP1STAT = 0x00;
-    SSP1CON1 = 0x00;
-    SSP1CON3 = 0x00;
-    SSP1ADD  = 0x00;
+    SSP1STAT = (uint8_t)0x00;
+    SSP1CON1 = (uint8_t)0x00;
+    SSP1CON3 = (uint8_t)0x00;
+    SSP1ADD  = (uint8_t)0x00;
 }
 
 void SPI1_Deinitialize(void)
 {
     // Return mssp1 registers to reset state
-    SSP1STAT = 0x00;
-    SSP1CON1 = 0x00;
-    SSP1CON3 = 0x00;
-    SSP1ADD  = 0x00;
+    SSP1STAT = (uint8_t)0x00;
+    SSP1CON1 = (uint8_t)0x00;
+    SSP1CON3 = (uint8_t)0x00;
+    SSP1ADD  = (uint8_t)0x00;
 }
 
 bool SPI1_Open(uint8_t spiConfigIndex)
 {
     bool returnValue = false;
-    if (SSP1CON1bits.SSPEN == false)
+    if (SSP1CON1bits.SSPEN == 0U)
     {
         SSP1STAT = spi1_configuration[spiConfigIndex].stat;
         SSP1CON1 = spi1_configuration[spiConfigIndex].con1;
         SSP1CON3 = spi1_configuration[spiConfigIndex].con3;
         SSP1ADD  = spi1_configuration[spiConfigIndex].baud;
 
-        SSP1CON1bits.SSPEN = 1;
+        SSP1CON1bits.SSPEN = 1U;
 
         returnValue = true;
     }
@@ -101,7 +100,7 @@ bool SPI1_Open(uint8_t spiConfigIndex)
 
 void SPI1_Close(void)
 {
-    SSP1CON1bits.SSPEN = 0;
+    SSP1CON1bits.SSPEN = 0U;
 }
 
 void SPI1_BufferExchange(void *bufferData, size_t bufferSize)
@@ -111,11 +110,11 @@ void SPI1_BufferExchange(void *bufferData, size_t bufferSize)
     while (0U != bufferInputSize)
     {
         SSP1BUF = *bufferInput;
-        while (!PIR5bits.SSP1IF)
+        while (PIR5bits.SSP1IF == 0U)
         {
             // Wait for flag to get set
         }
-        PIR5bits.SSP1IF = 0;
+        PIR5bits.SSP1IF = 0U;
         *bufferInput = SSP1BUF;
         bufferInput++;
         bufferInputSize--;
@@ -129,11 +128,11 @@ void SPI1_BufferWrite(void *bufferData, size_t bufferSize)
     while (0U != bufferInputSize)
     {
         SSP1BUF = *bufferInput;
-        while (!PIR5bits.SSP1IF)
+        while (PIR5bits.SSP1IF == 0U)
         {
             // Wait for flag to get set
         }
-        PIR5bits.SSP1IF = 0;
+        PIR5bits.SSP1IF = 0U;
         bufferInput++;
         bufferInputSize--;
     }
@@ -145,12 +144,12 @@ void SPI1_BufferRead(void *bufferData, size_t bufferSize)
     size_t bufferInputSize = bufferSize;
     while (0U != bufferInputSize)
     {
-        SSP1BUF = 0x00;
-        while (!PIR5bits.SSP1IF)
+        SSP1BUF = (uint8_t)0x00;
+        while (PIR5bits.SSP1IF == 0U)
         {
             // Wait for flag to get set
         }
-        PIR5bits.SSP1IF = 0;
+        PIR5bits.SSP1IF = 0U;
         *bufferInput = SSP1BUF;
         bufferInput++;
         bufferInputSize--;
@@ -160,11 +159,11 @@ void SPI1_BufferRead(void *bufferData, size_t bufferSize)
 uint8_t SPI1_ByteExchange(uint8_t byteData)
 {
     SSP1BUF = byteData;
-    while (!PIR5bits.SSP1IF)
+    while (PIR5bits.SSP1IF == 0U)
     {
         // Wait for flag to get set
     }
-    PIR5bits.SSP1IF = 0;
+    PIR5bits.SSP1IF = 0U;
     return SSP1BUF;
 }
 
@@ -177,7 +176,7 @@ uint8_t SPI1_ByteRead(void)
 {
     if (1U == PIR5bits.SSP1IF)
     {
-        PIR5bits.SSP1IF = 0;
+        PIR5bits.SSP1IF = 0U;
     }
     return SSP1BUF;
 }
@@ -185,7 +184,7 @@ uint8_t SPI1_ByteRead(void)
 bool SPI1_IsRxReady(void)
 {
     bool returnValue = false;
-    if (SSP1CON1bits.SSPEN == 1)
+    if (SSP1CON1bits.SSPEN == 1U)
     {
         returnValue = ((PIR5bits.SSP1IF != 0U) ? true: false);
     }
@@ -199,7 +198,7 @@ bool SPI1_IsRxReady(void)
 bool SPI1_IsTxReady(void)
 {
     bool returnValue = false;
-    if (SSP1CON1bits.SSPEN == 1)
+    if (SSP1CON1bits.SSPEN == 1U)
     {
         returnValue = ((PIR5bits.SSP1IF != 0U) ? false: true);
     }

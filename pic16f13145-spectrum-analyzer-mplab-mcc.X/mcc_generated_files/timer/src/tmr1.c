@@ -7,10 +7,12 @@
   *
   * @brief Driver implementation for the TMR1 driver
   *
-  * @version TMR1 Driver Version 3.1.4
-*/
+  * @version TMR1 Driver Version 4.1.0
+  * 
+  * @version Package Version 5.2.1
+  */
 /*
-© [2024] Microchip Technology Inc. and its subsidiaries.
+© [2026] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -37,20 +39,7 @@
 #include <xc.h>
 #include "../tmr1.h"
 
-/**
- * Section: Global Variables Definitions
-*/
-volatile uint16_t timer1ReloadVal;
-void (*TMR1_InterruptHandler)(void);
-
-const struct TMR_INTERFACE Timer1 = {
-    .Initialize = TMR1_Initialize,
-    .Start = TMR1_Start,
-    .Stop = TMR1_Stop,
-    .PeriodCountSet = TMR1_PeriodCountSet,
-    .TimeoutCallbackRegister = TMR1_OverflowCallbackRegister,
-    .Tasks = NULL
-};
+static volatile uint16_t timer1ReloadVal;
 static void (*TMR1_OverflowCallback)(void);
 static void TMR1_DefaultOverflowCallback(void);
 static void (*TMR1_GateCallback)(void);
@@ -58,156 +47,195 @@ static void TMR1_DefaultGateCallback(void);
 
 void TMR1_Initialize(void)
 {
-    //Disable timer
-    T1CONbits.TMR1ON = 0;
-    //TGGO done; TGSPM disabled; TGTM disabled; TGPOL low; TMRGE disabled; 
-    T1GCON = 0x0;
-    //TGSS T1GPPS; 
-    T1GATE = 0x0;
-    //TMRCS FOSC; 
-    T1CLK = 0x2;
-    //TMRH 252; 
-    TMR1H = 0xFC;
-    //TMRL 223; 
-    TMR1L = 0xDF;
+    T1CONbits.TMR1ON = 0U;             // TMRON disabled
 
-    // Load the TMR1 value to reload variable
-    timer1ReloadVal=((uint16_t)TMR1H << 8) | TMR1L;
+    T1GCON = (uint8_t)((0 << _T1GCON_T1GGO_POSN)   // T1GGO done
+        | (0 << _T1GCON_T1GSPM_POSN)   // T1GSPM disabled
+        | (0 << _T1GCON_T1GTM_POSN)   // T1GTM disabled
+        | (0 << _T1GCON_T1GPOL_POSN)   // T1GPOL low
+        | (0 << _T1GCON_T1GE_POSN));  // T1GE disabled
 
-    //Set default callback for TMR1 overflow interrupt
-    TMR1_OverflowCallbackRegister(TMR1_DefaultOverflowCallback);
+    T1GATE = (uint8_t)((0 << _T1GATE_GSS_POSN));  // GSS T1GPPS
 
-    //Set default callback for TMR1 gate interrupt
-    TMR1_GateCallbackRegister(TMR1_DefaultGateCallback);
+    T1CLK = (uint8_t)((2 << _T1CLK_CS_POSN));  // CS FOSC
 
-    // Clearing TMRI IF flag before enabling the interrupt.
-     PIR1bits.TMR1IF = 0;
-    // Enabling TMRI interrupt.
-     PIE1bits.TMR1IE = 1;
+    TMR1H = (uint8_t)0xFC;              // Period 25.03125us; Timer clock 32000000 Hz;
+    TMR1L = (uint8_t)0xDF;
+
     
-    //TMRON enabled; TRD16 enabled; nTSYNC do_not_synchronize; TCKPS 1:1; 
-    T1CON = 0x7;
+    uint16_t readValLow = (uint16_t)TMR1L;
+    uint16_t readValHigh = (uint16_t)((uint16_t)TMR1H << 8U);
+    
+    timer1ReloadVal = (uint16_t)(readValHigh | readValLow);
+	
+    TMR1_OverflowCallback = TMR1_DefaultOverflowCallback;
+    TMR1_GateCallback = TMR1_DefaultGateCallback;
+
+	PIR1bits.TMR1IF = 0U;
+	PIE1bits.TMR1IE = 1U;
+	PIR1bits.TMR1GIF = 0U;
+	
+    T1CON = (uint8_t)((1 << _T1CON_TMR1ON_POSN)   // TMR1ON enabled
+        | (0 << _T1CON_T1RD16_POSN)   // T1RD16 disabled
+        | (1 << _T1CON_nT1SYNC_POSN)   // nT1SYNC do_not_synchronize
+        | (0 << _T1CON_CKPS_POSN));  // CKPS 1:1
+}
+
+void TMR1_Deinitialize(void)
+{
+    T1CONbits.TMR1ON = 0U;             // TMRON disabled
+    
+    T1CON = (uint8_t)0x0;
+    T1GCON = (uint8_t)0x0;
+    T1GATE = (uint8_t)0x0;
+    T1CLK = (uint8_t)0x0;
+    TMR1H = (uint8_t)0x0;
+    TMR1L = (uint8_t)0x0;
+
+    PIR1bits.TMR1IF = 0U;
+    PIE1bits.TMR1IE = 0U;
+    PIR1bits.TMR1GIF = 0U;
+    PIE1bits.TMR1GIE = 0U;
 }
 
 void TMR1_Start(void)
-{
-    // Start the Timer by writing to TMRxON bit
-    T1CONbits.TMR1ON = 1;
+{   
+    T1CONbits.TMR1ON = 1U;
 }
 
 void TMR1_Stop(void)
-{
-    // Stop the Timer by writing to TMRxON bit
-    T1CONbits.TMR1ON = 0;
+{ 
+    T1CONbits.TMR1ON = 0U;
 }
 
-uint16_t TMR1_Read(void)
+uint16_t TMR1_CounterGet(void)
 {
     uint16_t readVal;
-    uint8_t readValHigh;
-    uint8_t readValLow;
+    uint16_t readValHigh;
+    uint16_t readValLow;
     	
-    readValLow = TMR1L;
-    readValHigh = TMR1H;
+    readValLow = (uint16_t)TMR1L;
+    readValHigh = (uint16_t)((uint16_t)TMR1H << 8);
     
-    readVal = ((uint16_t)readValHigh << 8) | readValLow;
+    readVal = (uint16_t)(readValHigh | readValLow);
 
     return readVal;
 }
 
-void TMR1_Write(size_t timerVal)
+/* cppcheck-suppress misra-c2012-8.7 */
+void TMR1_CounterSet(uint16_t timerVal)
 {
-    if (T1CONbits.nT1SYNC == 1)
+    if (1U == T1CONbits.nT1SYNC)
     {
-        // Stop the Timer by writing to TMRxON bit
-        T1CONbits.TMR1ON = 0;
-
-        // Write to the Timer1 register
-        TMR1H = (uint8_t)(timerVal >> 8);
+        bool onState = T1CONbits.TMR1ON;
+      
+        TMR1H = (uint8_t)(timerVal >> 8U);
         TMR1L = (uint8_t)timerVal;
-
-        // Start the Timer after writing to the register
-        T1CONbits.TMR1ON = 1;
+       
+        T1CONbits.TMR1ON = (uint8_t)onState;
     }
     else
-    {
-        // Write to the Timer1 register
-        TMR1H = (uint8_t)(timerVal >> 8);
+    {      
+        TMR1H = (uint8_t)(timerVal >> 8U);
         TMR1L = (uint8_t)timerVal;
     }
+}
+
+void TMR1_PeriodSet(uint16_t periodVal)
+{
+    timer1ReloadVal = periodVal;
+}
+
+uint16_t TMR1_PeriodGet(void)
+{
+    return timer1ReloadVal;
 }
 
 void TMR1_Reload(void)
 {
-    TMR1_Write(timer1ReloadVal);
+    /* cppcheck-suppress misra-c2012-8.7 */
+    TMR1_CounterSet(timer1ReloadVal);
 }
 
-void TMR1_PeriodCountSet(size_t periodVal)
+uint16_t TMR1_MaxCountGet(void)
 {
-   timer1ReloadVal = (uint16_t) periodVal;
+    return TMR1_MAX_COUNT;
 }
 
-void TMR1_StartSinglePulseAcquisition(void)
+void TMR1_SinglePulseAcquisitionStart(void)
 {
-    T1GCONbits.T1GGO = 1;
+    T1GCONbits.T1GGO = 1U;
 }
 
-uint8_t TMR1_CheckGateValueStatus(void)
+uint8_t TMR1_GateStateGet(void)
 {
-    return (T1GCONbits.T1GVAL);
+    return (uint8_t)(T1GCONbits.T1GVAL);
+}
+
+void TMR1_OverflowInterruptEnable(void)
+{
+    PIE1bits.TMR1IE = 1U;
+}
+
+void TMR1_OverflowInterruptDisable(void)
+{
+    PIE1bits.TMR1IE = 0U;
+}
+
+bool TMR1_GateEventStatusGet(void)
+{
+    return (PIR1bits.TMR1GIF);
+}
+
+void TMR1_GateEventStatusClear(void)
+{
+    PIR1bits.TMR1GIF = 0U;
 }
 
 void TMR1_OverflowISR(void)
 {
+    /* cppcheck-suppress misra-c2012-8.7 */
+    TMR1_CounterSet(timer1ReloadVal);
 
-    // Clear the TMR1 interrupt flag
-    PIR1bits.TMR1IF = 0;
-    TMR1_Write(timer1ReloadVal);
-
-    if(TMR1_OverflowCallback)
+    // The ticker is set to 1 -> The callback function gets called every time this ISR executes.
+    if(NULL != TMR1_OverflowCallback)
     {
         TMR1_OverflowCallback();
     }
+    PIR1bits.TMR1IF = 0U;
 }
 
-void TMR1_OverflowCallbackRegister(void (* CallbackHandler)(void))
+void TMR1_Tasks(void)
+{
+    if(1U == PIR1bits.TMR1GIF)
+    { 
+        if(NULL != TMR1_GateCallback)
+        {
+            TMR1_GateCallback();
+        }
+        PIR1bits.TMR1GIF = 0U;        
+    }   
+}
+void TMR1_OverflowCallbackRegister(void (*CallbackHandler)(void))
 {
     TMR1_OverflowCallback = CallbackHandler;
 }
 
-static void TMR1_DefaultOverflowCallback(void)
-{
-    //Add your interrupt code here or
-    //Use TMR1_OverflowCallbackRegister function to use Custom ISR
-}
 
-bool TMR1_HasOverflowOccured(void)
-{
-    return(PIR1bits.TMR1IF);
-}
-
-void TMR1_GateISR(void)
-{
-    // clear the TMR1 interrupt flag
-    PIR1bits.TMR1GIF = 0;
-    if(TMR1_GateCallback)
-    {
-        TMR1_GateCallback();
-    }
-}
-
-void TMR1_GateCallbackRegister(void (* CallbackHandler)(void))
+void TMR1_GateCallbackRegister(void (*CallbackHandler)(void))
 {
     TMR1_GateCallback = CallbackHandler;
 }
 
-static void TMR1_DefaultGateCallback(void)
+static void TMR1_DefaultOverflowCallback(void)
 {
-    //Add your interrupt code here or
-    //Use TMR1_GateCallbackRegister function to use Custom ISR
+    // Default overflow callback
 }
 
-
+static void TMR1_DefaultGateCallback(void)
+{
+    // Default Gate callback
+}
 /**
   End of File
 */

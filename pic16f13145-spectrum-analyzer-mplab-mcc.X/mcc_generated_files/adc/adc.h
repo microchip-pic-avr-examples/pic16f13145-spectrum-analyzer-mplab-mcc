@@ -7,12 +7,12 @@
  * 
  * @brief This file provides API prototypes for the ADC driver.
  *
- * @version ADC Driver Version 3.0.0
+ * @version ADC Driver Version 2.0.1
  * 
- * @version ADC Package Version 2.0.0
+ * @version ADC Package Version 2.0.2
 */
 /*
-© [2024] Microchip Technology Inc. and its subsidiaries.
+© [2026] Microchip Technology Inc. and its subsidiaries.
 
     Subject to your compliance with these terms, you may use Microchip 
     software and any derivatives exclusively with Microchip products. 
@@ -395,23 +395,6 @@ void ADC_AutoTriggerSourceSet(adc_trigger_source_t triggerSource);
  * @return uint8_t - Resolution value
 */
 uint8_t ADC_ResolutionGet(void);
-
-/**
- * @ingroup adc
- * @brief Returns the busy status of the ADC module.
- * @param None.
- * @retval True The ADC is in use
- * @retval False The ADC is not in use
-*/
-bool ADC_IsBusy(void);
-
-/**
- * @ingroup adc
- * @brief Sets the busy status of the ADC module.
- * @param status True to set the ADC status to busy, false to set it to not busy.
- * @return None.
-*/
-void ADC_BusyStatusSet(bool status);
 
 /**
  * @ingroup adc
