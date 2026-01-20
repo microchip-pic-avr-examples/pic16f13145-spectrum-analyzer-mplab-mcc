@@ -10,7 +10,7 @@
 
 # Spectrum Analyzer Using the PIC16F13145 Microcontroller With MCC Melody
 
-This repository contains an MPLAB® X project that implements a Fast Fourier Transform (FFT) Spectrum Analyzer using the PIC16F13145 microcontroller. The audio input is provided from a cable jack and the frequency spectrum result is displayed on a 16x16 WS2812 LED matrix. The application translates the messages sent by the Serial Peripheral Interface (SPI) into messages intelligible by WS2812 using a Configurable Logic Block (CLB) peripheral.
+This repository contains an MPLAB® X project that implements a Fast Fourier Transform (FFT) spectrum analyzer using the PIC16F13145 microcontroller. The audio input is provided from a cable jack and the frequency spectrum result is displayed on a 16x16 WS2812 LED matrix. The application translates the messages sent by the Serial Peripheral Interface (SPI) into messages intelligible by WS2812 using a Configurable Logic Block (CLB) peripheral.
 
 
 
@@ -60,7 +60,7 @@ To program the Curiosity Nano board with this MPLAB X project, follow the steps 
 
 ## Concept
 
-The FFT is a method to decompose a signal into its frequency components. The spectrum frequency is computed using a 16-bit FFT implementation. FFT computes the frequency spectrum using 64 samples from Analog-to-Digital Converter (ADC) as input and returns 32 complex numbers as output. In order to be correctly display, it is necessary to calculate the absolute values of the complex numbers from their real and imaginary components. For the FFT implementation, the `fix_fft` library, ported to PIC by Simon Inns, is used. More details about `fix_fft` library are available in [Real-Time Audio Spectrum Analyser Project](https://www.waitingforfriday.com/?p=325).
+The FFT is a method to decompose a signal into its frequency components. The spectrum frequency is computed using a 16-bit FFT implementation. FFT computes the frequency spectrum using 64 samples from the Analog-to-Digital Converter (ADC) as input and returns 32 complex numbers as output. To be correctly displayed, it is necessary to calculate the absolute values of the complex numbers from their real and imaginary components. For the FFT implementation, the `fix_fft` library, ported to PIC® by Simon Inns, is used. More details about `fix_fft` library are available in [Real-Time Audio Spectrum Analyser Project](https://www.waitingforfriday.com/?p=325).
 
 
  The final 32 values are grouped into 16 intervals corresponding to the 16 bars graph on the matrix. Amplitude values are mapped between 0 and 160. The peak value of 160 was determined experimentally by configuring the Universal Asynchronous Receiver-Transmitter (UART) peripheral in order to see the values obtained from several tests.
@@ -68,15 +68,15 @@ The FFT is a method to decompose a signal into its frequency components. The spe
 The audio signal from cable jack is provided through the Curiosity Nano Explorer microphone amplifier (`AMP_IN input`), configured for unity gain. The `J206` jumper from `MIC CIRCUIT` must be off when connecting the audio signal. 
 <br><img src="images/schematic_amp_in_input.png" width="400">
 
-The ADC converts audio signal into digital samples with a sample rate controlled by TMR1. In this code example, the TMR1 period is configured to 25 us (40 kHz), resulting in a 20 kHz maximum frequency that can be analyzed using FFT algorithm.
+The ADC converts audio signal into digital samples with a sample rate controlled by Timer1 (TMR1). In this code example, the TMR1 period is configured to 25 μs (40 kHz), resulting in a 20 kHz maximum frequency that can be analyzed using the FFT algorithm.
 
 
 ## Display Matrix
 
-The Frequeny Spectrum is displayed on a 16x16 WS2812 LED Matrix. The CLB can control and manipulate the transmitted data through the SPI and transform it into the equivalent WS2812 data. The figure below shows the implemented solution.
+The Frequeny Spectrum is displayed on a 16x16 WS2812 LED matrix. The CLB can control and manipulate the transmitted data through the SPI and transform it into the equivalent WS2812 data. The figure below shows the implemented solution.
 <br><img src="images/mcc_clb_circuit.png" width="800">
 
-More details about implementation are provided in [SPI to WS2812 — Use Case for CLB Using the PIC16F13145 Microcontroller with MCC Melody](https://github.com/microchip-pic-avr-examples/pic16f13145-spi-ws2812-mplab-mcc/tree/main).
+More details about implementation are provided in [_SPI to WS2812 — Use Case for CLB Using the PIC16F13145 Microcontroller with MCC Melody_](https://github.com/microchip-pic-avr-examples/pic16f13145-spi-ws2812-mplab-mcc/tree/main).
 
 
 ## Setup 
@@ -86,7 +86,7 @@ The following peripheral and clock configurations are set up using MPLAB® Code 
 1. Configurations Bits:
     - CONFIG1:
         - External Oscillator mode selection bits: Oscillator not enabled
-        - Power-up default value for COSC bits: HFINTOSC (1MHz)
+        - Power-up default value for COSC bits: HFINTOSC (1 MHz)
         <br><img src="images/mcc_config_bits_1.png" width="400">
     - CONFIG2:
         - Brown-out reset enable bits: Brown-out reset disabled
@@ -125,7 +125,7 @@ The following peripheral and clock configurations are set up using MPLAB® Code 
     - Clock Source: FOSC
     - Prescaler: 1:1
     - Timer Count Editor Enable: Disabled
-    - Requested Period: 25us
+    - Requested Period: 25 μs
     - TMR Interrupt Enable: Enabled 
     <br><img src="images/mcc_tmr1_1.png" width="400"> 
     <br><img src="images/mcc_tmr1_2.png" width="400"> 
@@ -145,10 +145,7 @@ The following peripheral and clock configurations are set up using MPLAB® Code 
 8. CRC:
     - Auto-configured by the CLB
 
-9. NVM:
-    - Auto-configured by the CLB
-
-10. Pin Grid View:
+9. Pin Grid View:
    - CLBPPSOUT0: RB4 (CLBSWIN0)
    - CLBPPSOUT1: RB5 (SDO)
    - CLBPPSOUT2: RB6 (SCK)
@@ -161,7 +158,7 @@ The following table shows the setup connections:
 
 |     **Pin**      |  **Connection**   |  **Other**                   | 
 | :-------:        | :-------:         | :-------:                    | 
-|   AMP IN         | Jack Output       |    J206 off                  | 
+|   AMP IN         | Jack output       |    J206 off                  | 
 |   RA1            | MIC OUT           |       -                      | 
 |   RB7            | SPI_to_WS2812 out | WS2812 input data in matrix  |   
 |                  |                   |                              |
@@ -181,7 +178,7 @@ The figure below shows the schematic of the assembly.
 
 ## Summary
 
-This example demonstrates how to implement a FFT Spectum Analyser using the PIC16F13145 microcontroller. The 16-band frequency spectrum is displayed on a WS2812 LED Matrix using CLB.
+This example demonstrates how to implement an FFT spectrum analyzer using the PIC16F13145 microcontroller. The 16-band frequency spectrum is displayed on a WS2812 LED matrix using CLB.
 <br>
 
 ##  How to Program the Curiosity Nano Board
@@ -193,21 +190,21 @@ This chapter demonstrates how to use the MPLAB X IDE to program a PIC® device w
 2.  Open the `Example_Project.X` project in MPLAB X IDE.
 
 3.  Set the `Example_Project.X` project as main project.
-    <br>Right click the project in the **Projects** tab and click **Set as Main Project**.
+    <br>Right click the project in the **Projects** tab and click Set as Main Project.
     <br><img src="images/Program_Set_as_Main_Project.png" width="600">
 
 4.  Clean and build the `Example_Project.X` project.
-    <br>Right click the `Example_Project.X` project and select **Clean and Build**.
+    <br>Right click the `Example_Project.X` project and select Clean and Build.
     <br><img src="images/Program_Clean_and_Build.png" width="600">
 
-5.  Select **PICxxxxx Curiosity Nano** in the Connected Hardware Tool section of the project settings:
-    <br>Right click the project and click **Properties**.
+5.  Select PICxxxxx Curiosity Nano in the Connected Hardware Tool section of the project settings:
+    <br>Right click the project and click Properties.
     <br>Click the arrow under the Connected Hardware Tool.
-    <br>Select **PICxxxxx Curiosity Nano** (click the **SN**), click **Apply** and then click **OK**:
+    <br>Select PICxxxxx Curiosity Nano (click the SN), click **Apply** and then click **OK**:
     <br><img src="images/Program_Tool_Selection.png" width="600">
 
 6.  Program the project to the board.
-    <br>Right click the project and click **Make and Program Device**.
+    <br>Right click the project and click Make and Program Device.
     <br><img src="images/Program_Make_and_Program_Device.png" width="600">
 
 <br>
@@ -220,7 +217,7 @@ This chapter demonstrates how to use the MPLAB X IDE to program a PIC® device w
 - [Back to Hardware Used](#hardware-used)
 - [Back to Operation](#operation)
 - [Back to Concept](#concept)
-- [Back to Display matrix](#display-matrix)
+- [Back to Display Matrix](#display-matrix)
 - [Back to Setup](#setup)
 - [Back to Demo](#demo)
 - [Back to Summary](#summary)
